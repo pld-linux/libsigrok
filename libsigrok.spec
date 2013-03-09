@@ -8,8 +8,9 @@ License:	GPL v3+
 Group:		Libraries
 URL:		http://www.sigrok.org/
 #Source0:	http://downloads.sourceforge.net/sigrok/%{name}-%{version}.tar.gz
-Source0:	http://sigrok.org/gitweb/?p=libsigrok.git;a=snapshot;h=%{snap};sf=tgz;/%{name}-%{snap}.tar.gz
-# Source0-md5:	2f8966293a1589d7b44278a71ddb8b23
+#Source0:	http://sigrok.org/gitweb/?p=libsigrok.git;a=snapshot;h=%{snap};sf=tgz;/%{name}-%{snap}.tar.gz
+Source0:	%{name}-%{snap}.tar.gz
+# Source0-md5:	0605e573435ba6334cb8e1270a4b060a
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
