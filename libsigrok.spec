@@ -1,21 +1,23 @@
-#
-%bcond_with	alsa
-%bcond_with	mso19
+%define	snap	a618599
 #
 Summary:	Basic hardware access drivers for logic analyzers
 Name:		libsigrok
-Version:	0.1.1
-Release:	1
+Version:	0.2.0
+Release:	0.%{snap}.1
 License:	GPL v3+
 Group:		Libraries
 URL:		http://www.sigrok.org/
-Source0:	http://downloads.sourceforge.net/sigrok/%{name}-%{version}.tar.gz
-# Source0-md5:	285c0b69aa3d36a431bf752c4f70c755
-%{?with_alsa:BuildRequires:	alsa-lib-devel}
+#Source0:	http://downloads.sourceforge.net/sigrok/%{name}-%{version}.tar.gz
+Source0:	http://sigrok.org/gitweb/?p=libsigrok.git;a=snapshot;h=%{snap};sf=tgz;/%{name}-%{snap}.tar.gz
+# Source0-md5:	2f8966293a1589d7b44278a71ddb8b23
+BuildRequires:	alsa-lib-devel
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	doxygen
 BuildRequires:	glib2-devel
 BuildRequires:	graphviz
 BuildRequires:	libftdi-devel
+BuildRequires:	libtool
 BuildRequires:	libusb-devel
 BuildRequires:	libzip-devel
 BuildRequires:	udev-devel
@@ -36,20 +38,22 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{snap}
+
+grep AM_PROG_CC_C_O configure.ac && exit 1
+echo AM_PROG_CC_C_O >> configure.ac
 
 %build
+install -d autostuff
+%{__libtoolize}
+%{__aclocal}
+%{__autoheader}
+%{__automake}
+%{__autoconf}
 %configure \
 	--disable-static \
 	--disable-silent-rules \
-	--%{?with_alsa:en}%{!?with_alsa:dis}able-alsa \
-	--enable-asix-sigma \
-	--enable-chronovu-la8 \
-	--enable-fx2lafw \
-	--enable-demo \
-	--%{?with_mso19:en}%{!?with_mso19:dis}able-link-mso19 \
-	--enable-ols \
-	--enable-zeroplus-logic-cube
+	--enable-all-drivers \
 
 %{__make}
 
@@ -69,13 +73,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README NEWS COPYING ChangeLog
+%doc README NEWS
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.0
+%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.2
 
 %files devel
 %defattr(644,root,root,755)
-%doc doxy/html/*
-%{_includedir}/sigrok*.h
+%doc doxy/html-api/*
+%{_includedir}/libsigrok
 %attr(755,root,root) %{_libdir}/*.so
-%{_pkgconfigdir}/*.pc
+%{_pkgconfigdir}/libsigrok.pc
