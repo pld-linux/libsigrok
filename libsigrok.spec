@@ -1,5 +1,4 @@
-%define	snap	a618599
-#
+%define		snap	a618599
 Summary:	Basic hardware access drivers for logic analyzers
 Name:		libsigrok
 Version:	0.2.0
@@ -21,8 +20,10 @@ BuildRequires:	libftdi-devel
 BuildRequires:	libtool
 BuildRequires:	libusb-devel
 BuildRequires:	libzip-devel
+BuildRequires:	pkgconfig >= 1:0.22
 BuildRequires:	udev-devel
 BuildRequires:	zlib-devel
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 %{name} is a shared library written in C which provides the basic API
@@ -62,12 +63,11 @@ doxygen Doxyfile
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -82,5 +82,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc doxy/html-api/*
 %{_includedir}/libsigrok
-%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_libdir}/libsigrok.so
 %{_pkgconfigdir}/libsigrok.pc
