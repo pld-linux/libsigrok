@@ -1,15 +1,12 @@
-%define		snap	a618599
 Summary:	Basic hardware access drivers for logic analyzers
 Name:		libsigrok
 Version:	0.2.0
-Release:	0.%{snap}.1
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 URL:		http://www.sigrok.org/
-#Source0:	http://downloads.sourceforge.net/sigrok/%{name}-%{version}.tar.gz
-#Source0:	http://sigrok.org/gitweb/?p=libsigrok.git;a=snapshot;h=%{snap};sf=tgz;/%{name}-%{snap}.tar.gz
-Source0:	%{name}-%{snap}.tar.gz
-# Source0-md5:	0605e573435ba6334cb8e1270a4b060a
+Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
+# Source0-md5:	4683b44d99924def7f552dfc17537541
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -40,10 +37,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -q -n %{name}-%{snap}
-
-grep AM_PROG_CC_C_O configure.ac && exit 1
-echo AM_PROG_CC_C_O >> configure.ac
+%setup -q
 
 %build
 install -d autostuff
@@ -76,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README NEWS
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.2
+%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.1
 
 %files devel
 %defattr(644,root,root,755)
