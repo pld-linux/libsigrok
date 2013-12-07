@@ -1,12 +1,12 @@
 Summary:	Basic hardware access drivers for logic analyzers
 Name:		libsigrok
-Version:	0.2.0
+Version:	0.2.2
 Release:	1
 License:	GPL v3+
 Group:		Libraries
 URL:		http://www.sigrok.org/
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
-# Source0-md5:	4683b44d99924def7f552dfc17537541
+# Source0-md5:	c14ae407e33b43cae33751246a045ab9
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
