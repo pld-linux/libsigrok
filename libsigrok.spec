@@ -1,7 +1,7 @@
 Summary:	Basic hardware access drivers for logic analyzers
 Name:		libsigrok
 Version:	0.2.2
-Release:	2
+Release:	3
 License:	GPL v3+
 Group:		Libraries
 URL:		http://www.sigrok.org/
@@ -57,7 +57,7 @@ doxygen Doxyfile
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/lib/udev/rules.d/
+install -d $RPM_BUILD_ROOT{/lib/udev/rules.d/,%{_datadir}/sigrok-firmware}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -76,6 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libsigrok.so.1
 /lib/udev/rules.d/60-libsigrok.rules
+%{_datadir}/sigrok-firmware
 
 %files devel
 %defattr(644,root,root,755)
