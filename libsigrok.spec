@@ -5,26 +5,33 @@
 Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
 Name:		libsigrok
-Version:	0.2.2
-Release:	3
+Version:	0.3.0
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
-# Source0-md5:	c14ae407e33b43cae33751246a045ab9
+# Source0-md5:	6bc9fa9da9b791b8da961003244adeec
 URL:		http://www.sigrok.org/
-BuildRequires:	alsa-lib-devel
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.63
+BuildRequires:	automake >= 1:1.11
+#BuildRequires:	check >= 0.9.4
 BuildRequires:	doxygen
-BuildRequires:	glib2-devel
+BuildRequires:	gcc >= 6:4.0
+BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	graphviz
-BuildRequires:	libftdi-devel
-BuildRequires:	libtool
-BuildRequires:	libusb-devel
-BuildRequires:	libzip-devel
+BuildRequires:	libftdi-devel >= 0.16
+#BuildRequires:	librevisa-devel >= 0.0.20130812
+BuildRequires:	libserialport-devel >= 0.1.0
+BuildRequires:	libtool >= 2:2
+BuildRequires:	libusb-devel >= 1.0.16
+BuildRequires:	libzip-devel >= 0.10
 BuildRequires:	pkgconfig >= 1:0.22
-BuildRequires:	udev-devel
-BuildRequires:	zlib-devel
+Requires:	glib2-devel >= 1:2.32.0
+Requires:	libftdi-devel >= 0.16
+#Requires:	librevisa-devel >= 0.0.20130812
+Requires:	libserialport-devel >= 0.1.0
+Requires:	libusb-devel >= 1.0.16
+Requires:	libzip-devel >= 0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -43,6 +50,10 @@ Summary:	Development files for libsigrok
 Summary(pl.UTF-8):	Pliki programistyczne biblioteki libsigrok
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.32.0
+Requires:	libftdi-devel >= 0.16
+Requires:	libusb-devel >= 1.0.16
+Requires:	libzip-devel >= 0.10
 
 %description devel
 This package contains the header files for developing applications
@@ -92,6 +103,9 @@ install -d $RPM_BUILD_ROOT{/lib/udev/rules.d,%{_datadir}/sigrok-firmware}
 
 sed -e 's#plugdev#usb#g' contrib/z60_libsigrok.rules > $RPM_BUILD_ROOT/lib/udev/rules.d/60-libsigrok.rules
 
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libsigrok.la
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -100,9 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README NEWS
+%doc ChangeLog NEWS README README.devices
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.1
+%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.2
 /lib/udev/rules.d/60-libsigrok.rules
 %{_datadir}/sigrok-firmware
 
