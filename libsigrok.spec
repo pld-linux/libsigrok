@@ -20,18 +20,18 @@ BuildRequires:	gcc >= 6:4.0
 BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	graphviz
 BuildRequires:	libftdi-devel >= 0.16
-#BuildRequires:	librevisa-devel >= 0.0.20130812
+BuildRequires:	librevisa-devel >= 0.0.20130812
 BuildRequires:	libserialport-devel >= 0.1.0
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libusb-devel >= 1.0.16
 BuildRequires:	libzip-devel >= 0.10
 BuildRequires:	pkgconfig >= 1:0.22
-Requires:	glib2-devel >= 1:2.32.0
-Requires:	libftdi-devel >= 0.16
-#Requires:	librevisa-devel >= 0.0.20130812
-Requires:	libserialport-devel >= 0.1.0
-Requires:	libusb-devel >= 1.0.16
-Requires:	libzip-devel >= 0.10
+Requires:	glib2 >= 1:2.32.0
+Requires:	libftdi >= 0.16
+Requires:	librevisa >= 0.0.20130812
+Requires:	libserialport >= 0.1.0
+Requires:	libusb >= 1.0.16
+Requires:	libzip >= 0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -52,6 +52,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	glib2-devel >= 1:2.32.0
 Requires:	libftdi-devel >= 0.16
+Requires:	librevisa-devel >= 0.0.20130812
 Requires:	libusb-devel >= 1.0.16
 Requires:	libzip-devel >= 0.10
 
