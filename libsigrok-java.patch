@@ -1,0 +1,16 @@
+--- libsigrok-0.4.0/Makefile.am.orig	2016-07-02 08:54:03.332196411 +0200
++++ libsigrok-0.4.0/Makefile.am	2016-07-02 08:54:51.591934967 +0200
+@@ -743,9 +743,11 @@
+ 		-fno-strict-aliasing -fPIC -shared $(JCLS)/classes_wrap.cxx \
+ 		-lsigrokcxx $(LIBSIGROKCXX_LIBS) -o $(JLIB)
+ 
++jnilibdir = $(libdir)
++
+ java-install:
+-	$(INSTALL) -d $(DESTDIR)$(libdir)/jni
+-	$(INSTALL) $(JLIB) $(DESTDIR)$(libdir)/jni
++	$(INSTALL) -d $(DESTDIR)$(jnilibdir)
++	$(INSTALL) $(JLIB) $(DESTDIR)$(jnilibdir)
+ 	$(INSTALL) -d $(DESTDIR)$(datadir)/java
+ 	$(INSTALL) $(JJAR) $(DESTDIR)$(datadir)/java
+ 

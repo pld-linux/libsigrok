@@ -1,12 +1,10 @@
-# TODO:
-# - bindings (ruby, java)
 #
 # Conditional build:
 %bcond_without	static_libs	# static library
-%bcond_without	python2 # CPython 2.x module
-%bcond_without	python3 # CPython 3.x module
-
-%define	module	sigrok
+%bcond_without	java		# Java bindings
+%bcond_without	python2		# CPython 2.x module
+%bcond_without	python3		# CPython 3.x module
+%bcond_without	ruby		# Ruby module
 
 Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
@@ -17,6 +15,10 @@ License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
 # Source0-md5:	6cd64b94be0b8ce7224de8c823f735aa
+Patch0:		%{name}-python.patch
+Patch1:		%{name}-missing.patch
+Patch2:		%{name}-ruby.patch
+Patch3:		%{name}-java.patch
 URL:		http://www.sigrok.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -24,28 +26,46 @@ BuildRequires:	automake >= 1:1.11
 BuildRequires:	doxygen
 BuildRequires:	gcc >= 6:4.0
 BuildRequires:	glib2-devel >= 1:2.32.0
+BuildRequires:	glibmm-devel >= 2.32.0
 BuildRequires:	graphviz
-BuildRequires:	libftdi-devel >= 0.16
+%{?with_java:BuildRequires:	jdk}
+BuildRequires:	libftdi1-devel >= 1.0
+# TODO:
+#BuildRequires:	libgpib-devel
+BuildRequires:	libieee1284-devel
 BuildRequires:	librevisa-devel >= 0.0.20130812
 BuildRequires:	libserialport-devel >= 0.1.1
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libusb-devel >= 1.0.16
 BuildRequires:	libzip-devel >= 0.10
 BuildRequires:	pkgconfig >= 1:0.22
+# required also for C++ binding
+BuildRequires:	python >= 1:2.7
 %if %{with python2}
-BuildRequires:	python-modules
+BuildRequires:	python-modules >= 1:2.7
 BuildRequires:	python-numpy-devel
+BuildRequires:	python-pygobject3-devel >= 3.0.0
 BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
-BuildRequires:	python3-modules
+BuildRequires:	python3-modules >= 1:3.2
 BuildRequires:	python3-numpy-devel
+BuildRequires:	python3-pygobject3-devel >= 3.0.0
 BuildRequires:	python3-setuptools
 %endif
+BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.612
+%{?with_ruby:BuildRequires:	ruby-devel}
+%{?with_java:BuildRequires:	swig}
+%if %{with python2} || %{with python3}
+BuildRequires:	swig-python
+%endif
+%{?with_ruby:BuildRequires:	swig-ruby >= 3.0.8}
 Requires:	glib2 >= 1:2.32.0
-Requires:	libftdi >= 0.16
+Requires:	libftdi1 >= 1.0
 Requires:	librevisa >= 0.0.20130812
-Requires:	libserialport >= 0.1.0
+Requires:	libserialport >= 0.1.1
 Requires:	libusb >= 1.0.16
 Requires:	libzip >= 0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -67,8 +87,10 @@ Summary(pl.UTF-8):	Pliki programistyczne biblioteki libsigrok
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	glib2-devel >= 1:2.32.0
-Requires:	libftdi-devel >= 0.16
+Requires:	libftdi1-devel >= 1.0
+Requires:	libieee1284-devel
 Requires:	librevisa-devel >= 0.0.20130812
+Requires:	libserialport-devel >= 0.1.1
 Requires:	libusb-devel >= 1.0.16
 Requires:	libzip-devel >= 0.10
 
@@ -93,65 +115,108 @@ Static libsigrok library.
 Statyczna biblioteka libsigrok.
 
 %package c++
-Summary:	C++ libsigrok library
-Summary(pl.UTF-8):	Biblioteka C++ libsigrok
-Group:		Development/Libraries
+Summary:	C++ bindings for libsigrok library
+Summary(pl.UTF-8):	Wiązania C++ do biblioteki libsigrok
+Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	glibmm >= 2.32.0
 
 %description c++
-C++ libsigrok library.
+C++ bindings for libsigrok library.
 
 %description c++ -l pl.UTF-8
-Biblioteka C++ libsigrok.
+Wiązania C++ do biblioteki libsigrok.
 
 %package c++-devel
-Summary:	Header files for develop C++ libsigrok based application
-Summary(pl.UTF-8):	Pliki nagłówkowe do biblioteki C++ libsigrok
+Summary:	Header files for libsigrokcxx based applications
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libsigrokcxx
 Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	glibmm-devel >= 2.32.0
+Requires:	libstdc++-devel
 
 %description c++-devel
-This package includes the header files and libraries necessary to
-develop applications that use C++ libsigrok.
+This package includes the header files necessary to develop
+applications that use libsigrokcxx library.
 
 %description c++-devel -l pl.UTF-8
 Pakiet ten zawiera pliki nagłówkowe niezbędne do kompilacji programów
-z wykorzystaniem biblioteki c++-libsigrok.
+z wykorzystaniem biblioteki libsigrokcxx.
 
 %package c++-static
-Summary:	Static libraries for C++ libsigrok
-Summary(pl.UTF-8):	Biblioteki statyczne C++ libsigrok
+Summary:	Static libsigrokcxx library
+Summary(pl.UTF-8):	Biblioteka statyczna libsigrokcxx
 Group:		Development/Libraries
 Requires:	%{name}-c++-devel = %{version}-%{release}
 
 %description c++-static
-This package includes the static libraries necessary to develop
-applications that use C++ libsigrok.
+Static libsigrokcxx library.
 
 %description c++-static -l pl.UTF-8
-Pakiet ten zawiera biblioteki statyczne C++ libsigrok.
+Biblioteka statyczna libsigrokcxx.
 
-%package -n python-%{module}
-Summary:	libsigrok python bindings
+%package -n java-sigrok
+Summary:	Java bindings for libsigrok library
+Summary(pl.UTF-8):	Wiązania Javy do biblioteki libsigrok
+Group:		Libraries/Java
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	jre
+
+%description -n java-sigrok
+Java bindings for libsigrok library.
+
+%description -n java-sigrok -l pl.UTF-8
+Wiązania Javy do biblioteki libsigrok.
+
+%package -n python-sigrok
+Summary:	Python 2 bindings for libsigrok library
+Summary(pl.UTF-8):	Wiązania Pythona 2 do biblioteki libsigrok
 Group:		Libraries/Python
-Requires:	python-modules
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	python-modules >= 1:2.7
 
-%description -n python-%{module}
-libsigrok python bindings.
+%description -n python-sigrok
+Python 2 bindings for libsigrok library.
 
-%package -n python3-%{module}
-Summary:	libsigrok python bindings
+%description -n python-sigrok -l pl.UTF-8
+Wiązania Pythona 2 do biblioteki libsigrok.
+
+%package -n python3-sigrok
+Summary:	Python 3 bindings for libsigrok library
+Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki libsigrok
 Group:		Libraries/Python
-Requires:	python3-modules
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	python3-modules >= 1:3.2
 
-%description -n python3-%{module}
-libsigrok python bindings.
+%description -n python3-sigrok
+Python 3 bindings for libsigrok library.
+
+%description -n python3-sigrok -l pl.UTF-8
+Wiązania Pythona 3 do biblioteki libsigrok.
+
+%package -n ruby-sigrok
+Summary:	Ruby bindings for libsigrok library
+Summary(pl.UTF-8):	Wiązania języka Ruby do biblioteki libsigrok
+Group:		Libraries/Java
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	ruby
+
+%description -n ruby-sigrok
+Ruby bindings for libsigrok library.
+
+%description -n ruby-sigrok -l pl.UTF-8
+Wiązania języka Ruby do biblioteki libsigrok.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
-install -d autostuff
+#install -d autostuff
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -159,16 +224,18 @@ install -d autostuff
 %{__automake}
 
 %if %{with python3}
-install -d .py3-bindings
-cp -a * .py3-bindings
+install -d build-py3
+cd build-py3
+#install -d .py3-bindings
+#cp -a * .py3-bindings
 
-cd .py3-bindings
-%configure \
+#cd .py3-bindings
+../%configure \
 	PYTHON="%{__python3}" \
 	--disable-all-drivers \
-	--disable-silent-rules \
-	--disable-ruby \
 	--disable-java \
+	--disable-ruby \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-python
 %{__make} python-build
@@ -178,10 +245,10 @@ cd ..
 %configure \
 	PYTHON="%{__python}" \
 	--enable-all-drivers \
+	--enable-java%{!?with_java:=no} \
+	--enable-python%{!?with_python2:=no} \
+	--enable-ruby%{!?with_ruby:=no} \
 	--disable-silent-rules \
-	--disable-ruby \
-	--disable-java \
-	--%{?with_python2:en}%{!?with_python2:dis}able-python \
 	%{!?with_static_libs:--disable-static}
 
 %{__make}
@@ -193,7 +260,8 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/lib/udev/rules.d,%{_datadir}/sigrok-firmware}
 
 %if %{with python3}
-%{__make} -C .py3-bindings python-install \
+#%{__make} -C .py3-bindings python-install
+%{__make} -C build-py3 python-install \
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
@@ -204,6 +272,10 @@ sed -e 's#plugdev#usb#g' contrib/z60_libsigrok.rules > $RPM_BUILD_ROOT/lib/udev/
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libsigrok{,cxx}.la
+
+%if %{with python2}
+%py_postclean
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -252,20 +324,38 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libsigrokcxx.a
 %endif
 
-%if %{with python2}
-%files -n python-%{module}
+%if %{with java}
+%files -n java-sigrok
 %defattr(644,root,root,755)
-%{py_sitedir}/%{module}
-%if "%{py_ver}" > "2.4"
-%{py_sitedir}/*%{module}-%{version}-py*.egg-info
-%{py_sitedir}/*%{module}-%{version}-py*.pth
+%attr(755,root,root) %{_libdir}/libsigrok_java_core_classes.so
+%{_javadir}/sigrok-core.jar
 %endif
+
+%if %{with python2}
+%files -n python-sigrok
+%defattr(644,root,root,755)
+%dir %{py_sitedir}/sigrok
+%dir %{py_sitedir}/sigrok/core
+%attr(755,root,root) %{py_sitedir}/sigrok/core/_classes.so
+%{py_sitedir}/sigrok/core/*.py[co]
+%{py_sitedir}/libsigrok-%{version}-py*.egg-info
+%{py_sitedir}/libsigrok-%{version}-py*.pth
 %endif
 
 %if %{with python3}
-%files -n python3-%{module}
+%files -n python3-sigrok
 %defattr(644,root,root,755)
-%{py3_sitedir}/%{module}
-%{py3_sitedir}/*%{module}-%{version}-py*.egg-info
-%{py3_sitedir}/*%{module}-%{version}-py*.pth
+%dir %{py3_sitedir}/sigrok
+%dir %{py3_sitedir}/sigrok/core
+%attr(755,root,root) %{py3_sitedir}/sigrok/core/_classes.cpython-*.so
+%{py3_sitedir}/sigrok/core/*.py
+%{py3_sitedir}/sigrok/core/__pycache__
+%{py3_sitedir}/libsigrok-%{version}-py*.egg-info
+%{py3_sitedir}/libsigrok-%{version}-py*.pth
+%endif
+
+%if %{with ruby}
+%files -n ruby-sigrok
+%defattr(644,root,root,755)
+%attr(755,root,root) %{ruby_vendorarchdir}/sigrok.so
 %endif
