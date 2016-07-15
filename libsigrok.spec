@@ -1,6 +1,7 @@
 #
 # Conditional build:
 %bcond_without	static_libs	# static library
+%bcond_without	gpib		# GPIB interface support
 %bcond_without	java		# Java bindings
 %bcond_without	python2		# CPython 2.x module
 %bcond_without	python3		# CPython 3.x module
@@ -10,7 +11,7 @@ Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
 Name:		libsigrok
 Version:	0.4.0
-Release:	1
+Release:	2
 License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
@@ -30,8 +31,6 @@ BuildRequires:	glibmm-devel >= 2.32.0
 BuildRequires:	graphviz
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	libftdi1-devel >= 1.0
-# TODO:
-#BuildRequires:	libgpib-devel
 BuildRequires:	libieee1284-devel
 BuildRequires:	librevisa-devel >= 0.0.20130812
 BuildRequires:	libserialport-devel >= 0.1.1
@@ -39,6 +38,7 @@ BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libusb-devel >= 1.0.16
 BuildRequires:	libzip-devel >= 0.10
+%{?with_gpib:BuildRequires:	linux-gpib-devel}
 BuildRequires:	pkgconfig >= 1:0.22
 # required also for C++ binding
 BuildRequires:	python >= 1:2.7
@@ -216,7 +216,6 @@ Wiązania języka Ruby do biblioteki libsigrok.
 %patch3 -p1
 
 %build
-#install -d autostuff
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -226,10 +225,7 @@ Wiązania języka Ruby do biblioteki libsigrok.
 %if %{with python3}
 install -d build-py3
 cd build-py3
-#install -d .py3-bindings
-#cp -a * .py3-bindings
 
-#cd .py3-bindings
 ../%configure \
 	PYTHON="%{__python3}" \
 	--disable-all-drivers \
@@ -249,7 +245,8 @@ cd ..
 	--enable-python%{!?with_python2:=no} \
 	--enable-ruby%{!?with_ruby:=no} \
 	--disable-silent-rules \
-	%{!?with_static_libs:--disable-static}
+	%{!?with_static_libs:--disable-static} \
+	--with-libgpib%{!?with_gpib:=no}
 
 %{__make}
 
@@ -260,7 +257,6 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/lib/udev/rules.d,%{_datadir}/sigrok-firmware}
 
 %if %{with python3}
-#%{__make} -C .py3-bindings python-install
 %{__make} -C build-py3 python-install \
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
