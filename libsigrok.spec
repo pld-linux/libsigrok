@@ -11,7 +11,7 @@ Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
 Name:		libsigrok
 Version:	0.4.0
-Release:	4
+Release:	5
 License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
