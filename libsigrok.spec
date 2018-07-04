@@ -10,14 +10,14 @@
 Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
 Name:		libsigrok
-Version:	0.4.0
-Release:	6
+Version:	0.5.0
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
-# Source0-md5:	6cd64b94be0b8ce7224de8c823f735aa
+# Source0-md5:	0e27c89b6b7374fa9a571d6227f6a54a
 Patch0:		%{name}-python.patch
-Patch1:		%{name}-missing.patch
+
 Patch2:		%{name}-ruby.patch
 Patch3:		%{name}-java.patch
 URL:		http://www.sigrok.org/
@@ -211,7 +211,7 @@ Wiązania języka Ruby do biblioteki libsigrok.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+
 %patch2 -p1
 %patch3 -p1
 
@@ -240,7 +240,7 @@ cd ..
 
 %configure \
 	PYTHON="%{__python}" \
-	--enable-all-drivers \
+	--enable-all-drivers=yes \
 	--enable-java%{!?with_java:=no} \
 	--enable-python%{!?with_python2:=no} \
 	--enable-ruby%{!?with_ruby:=no} \
@@ -286,7 +286,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS README README.devices
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.3
+%attr(755,root,root) %ghost %{_libdir}/libsigrok.so.4
 /lib/udev/rules.d/60-libsigrok.rules
 %{_datadir}/sigrok-firmware
 
@@ -306,7 +306,7 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libsigrokcxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libsigrokcxx.so.3
+%attr(755,root,root) %ghost %{_libdir}/libsigrokcxx.so.4
 
 %files c++-devel
 %defattr(644,root,root,755)
