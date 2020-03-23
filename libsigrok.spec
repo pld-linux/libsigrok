@@ -2,20 +2,20 @@
 # Conditional build:
 %bcond_without	static_libs	# static library
 %bcond_without	gpib		# GPIB interface support
-%bcond_without	java		# Java bindings
+%bcond_with	java		# Java bindings
 %bcond_without	python2		# CPython 2.x module
 %bcond_without	python3		# CPython 3.x module
-%bcond_without	ruby		# Ruby module
+%bcond_with	ruby		# Ruby module
 
 Summary:	Basic hardware access drivers for logic analyzers
 Summary(pl.UTF-8):	Podstawowe sterowniki dostępu do sprzętu dla analizatorów logicznych
 Name:		libsigrok
-Version:	0.5.0
-Release:	3
+Version:	0.5.2
+Release:	1
 License:	GPL v3+
 Group:		Libraries
 Source0:	http://sigrok.org/download/source/libsigrok/%{name}-%{version}.tar.gz
-# Source0-md5:	0e27c89b6b7374fa9a571d6227f6a54a
+# Source0-md5:	e258d471b6d5eaa58daf927a0dc3ba67
 Patch0:		%{name}-python.patch
 
 Patch2:		%{name}-ruby.patch
@@ -264,8 +264,6 @@ install -d $RPM_BUILD_ROOT{/lib/udev/rules.d,%{_datadir}/sigrok-firmware}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-sed -e 's#plugdev#usb#g' contrib/z60_libsigrok.rules > $RPM_BUILD_ROOT/lib/udev/rules.d/60-libsigrok.rules
-
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libsigrok{,cxx}.la
 
@@ -287,7 +285,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc ChangeLog NEWS README README.devices
 %attr(755,root,root) %{_libdir}/libsigrok.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libsigrok.so.4
-/lib/udev/rules.d/60-libsigrok.rules
 %{_datadir}/sigrok-firmware
 
 %files devel
