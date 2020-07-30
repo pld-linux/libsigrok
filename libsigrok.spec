@@ -1,3 +1,7 @@
+# TODO: where to package?
+#%{_datadir}/mime/packages/vnd.sigrok.session.xml
+#%{_iconsdir}/hicolor/48x48/mimetypes/libsigrok.png
+#%{_iconsdir}/hicolor/scalable/mimetypes/libsigrok.svg
 #
 # Conditional build:
 %bcond_without	static_libs	# static library
@@ -20,15 +24,17 @@ Patch0:		%{name}-python.patch
 
 Patch2:		%{name}-ruby.patch
 Patch3:		%{name}-java.patch
-URL:		http://www.sigrok.org/
+URL:		https://sigrok.org/wiki/Libsigrok
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
+BuildRequires:	bluez-libs-devel >= 4.0
 #BuildRequires:	check >= 0.9.4
 BuildRequires:	doxygen
 BuildRequires:	gcc >= 6:4.0
 BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	glibmm-devel >= 2.32.0
 BuildRequires:	graphviz
+BuildRequires:	hidapi-devel >= 0.8.0
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	libftdi1-devel >= 1.0
 BuildRequires:	libieee1284-devel
@@ -45,13 +51,13 @@ BuildRequires:	python >= 1:2.7
 %if %{with python2}
 BuildRequires:	python-modules >= 1:2.7
 BuildRequires:	python-numpy-devel
-BuildRequires:	python-pygobject3-devel >= 3.0.0
+BuildRequires:	python-pygobject3-devel >= 3.8.0
 BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
 BuildRequires:	python3-modules >= 1:3.2
 BuildRequires:	python3-numpy-devel
-BuildRequires:	python3-pygobject3-devel >= 3.0.0
+BuildRequires:	python3-pygobject3-devel >= 3.8.0
 BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-pythonprov
@@ -175,6 +181,7 @@ Summary(pl.UTF-8):	Wiązania Pythona 2 do biblioteki libsigrok
 Group:		Libraries/Python
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	python-modules >= 1:2.7
+Requires:	python-pygobject3 >= 3.8.0
 
 %description -n python-sigrok
 Python 2 bindings for libsigrok library.
@@ -188,6 +195,7 @@ Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki libsigrok
 Group:		Libraries/Python
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	python3-modules >= 1:3.2
+Requires:	python3-pygobject3 >= 3.8.0
 
 %description -n python3-sigrok
 Python 3 bindings for libsigrok library.
