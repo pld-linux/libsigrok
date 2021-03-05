@@ -1,17 +1,7 @@
---- libsigrok-0.4.0/configure.ac.orig	2016-01-29 23:44:34.000000000 +0100
-+++ libsigrok-0.4.0/configure.ac	2016-07-02 08:53:49.128940025 +0200
-@@ -506,7 +506,7 @@
- AM_COND_IF([BINDINGS_CXX], [
- 	PKG_CHECK_MODULES([LIBSIGROKCXX], [$SR_PKGLIBS_CXX])
- 	PKG_CHECK_MODULES([PYSIGROK], [$SR_PKGLIBS_PYTHON $SR_PKGLIBS_CXX])
--	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX], [AC_SUBST(RBSIGROK_EXTDIR, "lib/$($PKG_CONFIG --variable=sitearch $SR_PKGLIBS_RUBY)/$($PKG_CONFIG --variable=RUBY_BASE_NAME $SR_PKGLIBS_RUBY)/vendor_ruby/$($PKG_CONFIG --variable=ruby_version $SR_PKGLIBS_RUBY)")])
-+	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX], [AC_SUBST(RBSIGROK_EXTDIR, "$($PKG_CONFIG --variable=vendorarchdir $SR_PKGLIBS_RUBY)")])
- ])
- 
- # Check for specific libusb features, now that we know the CFLAGS.
---- libsigrok-0.5.0/Makefile.am~	2018-07-04 20:24:21.000000000 +0200
-+++ libsigrok-0.5.0/Makefile.am	2018-07-04 20:30:43.023460726 +0200
-@@ -757,8 +757,8 @@ $(REXT): $(ROBJ) @ORDER@ bindings/cxx/li
+diff -urNp -x '*.orig' libsigrok-0.5.2.org/Makefile.am libsigrok-0.5.2/Makefile.am
+--- libsigrok-0.5.2.org/Makefile.am	2021-03-05 22:45:56.670754148 +0100
++++ libsigrok-0.5.2/Makefile.am	2021-03-05 22:45:56.734087208 +0100
+@@ -868,8 +868,8 @@ $(REXT): $(ROBJ) @ORDER@ bindings/cxx/li
  ruby-build: $(REXT)
  
  ruby-install: $(REXT)
@@ -22,3 +12,15 @@
  
  ruby-uninstall:
  	rm -f $(DESTDIR)$(prefix)/$(RBSIGROK_EXTDIR)/sigrok.$(RUBY_DLEXT)
+diff -urNp -x '*.orig' libsigrok-0.5.2.org/configure.ac libsigrok-0.5.2/configure.ac
+--- libsigrok-0.5.2.org/configure.ac	2019-12-25 21:29:19.000000000 +0100
++++ libsigrok-0.5.2/configure.ac	2021-03-05 22:45:56.734087208 +0100
+@@ -566,7 +566,7 @@ PKG_CHECK_MODULES([TESTS], [$SR_PKGLIBS_
+ AM_COND_IF([BINDINGS_CXX], [
+ 	PKG_CHECK_MODULES([LIBSIGROKCXX], [$SR_PKGLIBS_CXX])
+ 	PKG_CHECK_MODULES([PYSIGROK], [$SR_PKGLIBS_PYTHON $SR_PKGLIBS_CXX])
+-	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX], [AC_SUBST(RBSIGROK_EXTDIR, "lib/$($PKG_CONFIG --variable=sitearch $SR_PKGLIBS_RUBY)/$($PKG_CONFIG --variable=RUBY_BASE_NAME $SR_PKGLIBS_RUBY)/vendor_ruby/$($PKG_CONFIG --variable=ruby_version $SR_PKGLIBS_RUBY)")])
++	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX], [AC_SUBST(RBSIGROK_EXTDIR, "$($PKG_CONFIG --variable=vendorarchdir $SR_PKGLIBS_RUBY)")])
+ ])
+ 
+ # Check for specific libusb features, now that we know the CFLAGS.

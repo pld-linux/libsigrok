@@ -1,6 +1,7 @@
---- libsigrok-0.4.0/Makefile.am.orig	2016-01-29 23:44:34.000000000 +0100
-+++ libsigrok-0.4.0/Makefile.am	2016-06-30 19:57:26.586034973 +0200
-@@ -638,7 +638,7 @@
+diff -urNp -x '*.orig' libsigrok-0.5.2.org/Makefile.am libsigrok-0.5.2/Makefile.am
+--- libsigrok-0.5.2.org/Makefile.am	2019-12-25 21:29:19.000000000 +0100
++++ libsigrok-0.5.2/Makefile.am	2021-03-05 22:45:56.574087898 +0100
+@@ -822,7 +822,7 @@ $(PDIR)/timestamp: $(PDIR)/sigrok/core/c
  python-install:
  	$(AM_V_at)$(MKDIR_P) "$(DESTDIR)$(prefix)" "$(DESTDIR)$(exec_prefix)"
  	destdir='$(DESTDIR)'; $(setup_py) install $${destdir:+"--root=$$destdir"} \

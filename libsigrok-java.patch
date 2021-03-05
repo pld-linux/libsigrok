@@ -1,8 +1,9 @@
---- libsigrok-0.4.0/Makefile.am.orig	2016-07-02 08:54:03.332196411 +0200
-+++ libsigrok-0.4.0/Makefile.am	2016-07-02 08:54:51.591934967 +0200
-@@ -743,9 +743,11 @@
+diff -urNp -x '*.orig' libsigrok-0.5.2.org/Makefile.am libsigrok-0.5.2/Makefile.am
+--- libsigrok-0.5.2.org/Makefile.am	2021-03-05 22:45:56.830753458 +0100
++++ libsigrok-0.5.2/Makefile.am	2021-03-05 22:45:56.894086518 +0100
+@@ -932,9 +932,11 @@ $(JLIB): $(JCXX) \
  		-fno-strict-aliasing -fPIC -shared $(JCLS)/classes_wrap.cxx \
- 		-lsigrokcxx $(LIBSIGROKCXX_LIBS) -o $(JLIB)
+ 		-lsigrokcxx $(LIBSIGROKCXX_LIBS) $(SR_EXTRA_CXX_LIBS) -o $(JLIB)
  
 +jnilibdir = $(libdir)
 +
