@@ -234,7 +234,8 @@ Wiązania języka Ruby do biblioteki libsigrok.
 install -d build-py3
 cd build-py3
 
-../%configure \
+%define configuredir ..
+%configure \
 	PYTHON="%{__python3}" \
 	--disable-all-drivers \
 	--disable-java \
@@ -246,6 +247,7 @@ cd build-py3
 cd ..
 %endif
 
+%define configuredir .
 %configure \
 	PYTHON="%{__python}" \
 	--enable-all-drivers=yes \
