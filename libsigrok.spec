@@ -61,7 +61,7 @@ BuildRequires:	python3-pygobject3-devel >= 3.8.0
 BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.612
+BuildRequires:	rpmbuild(macros) >= 2.043
 %{?with_ruby:BuildRequires:	ruby-devel}
 %{?with_java:BuildRequires:	swig}
 %if %{with python2} || %{with python3}
